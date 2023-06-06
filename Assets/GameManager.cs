@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("GameManager AWAKE()");
         instance = this;
         points = 0;
         currentScene = 0;
