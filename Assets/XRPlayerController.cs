@@ -25,13 +25,13 @@ public class XRPlayerController : MonoBehaviour
 
     private InputDevice controller;
 
-    private bool buttonPressed;
-
     private Rigidbody rigidbodyComponent;
 
     private CapsuleCollider capsuleCollider;
 
     private List<InputDevice> devices = new List<InputDevice>();
+
+    public Camera vrCamera;
 
     public enum CapsuleDirection
 	{
@@ -72,6 +72,11 @@ public class XRPlayerController : MonoBehaviour
             GetDevice();
 		}
         UpdateMovement();
+
+        if (GameManager.points >= 100)
+        {
+            GameManager.instance.onFinishLevel();
+        }
     }
 
     private void UpdateMovement()
@@ -88,8 +93,22 @@ public class XRPlayerController : MonoBehaviour
             Vector3 right = transform.TransformDirection(Vector3.right);
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
-            transform.position += right * xAxis;
-            transform.position += forward * zAxis;
+            Vector3 moveDirection = right * xAxis + forward * zAxis;
+            transform.position += vrCamera.transform.TransformDirection(moveDirection);
         }
 	}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.transform.tag == "Cube")
+        {
+            GameManager.points += 10;
+            Debug.Log("POINTS: " + GameManager.points);
+        }
+        else if (collision.gameObject.transform.tag == "Sphere")
+        {
+            GameManager.points += 20;
+            Debug.Log("POINTS: " + GameManager.points);
+        }
+    }
 }
